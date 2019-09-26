@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 
+#计算点在投影上的排序位置、离AB线段的距离
 def Coordinate_projection(loc_a,loc_b,x,y,z):
     t = ((loc_b.X-loc_a.X)*(x-loc_a.X)+(loc_b.Y-loc_a.Y)*(y-loc_a.Y)+(loc_b.Z-loc_a.Z)*(z-loc_a.Z)) \
             /(np.square(loc_b.X-loc_a.X)+np.square(loc_b.Y-loc_a.Y)+np.square(loc_b.Z-loc_a.Z))
@@ -11,6 +12,7 @@ def Coordinate_projection(loc_a,loc_b,x,y,z):
     d = np.sqrt(np.square(x-x0)+np.square(y-y0)+np.square(z-z0))
     return t,d
 
+#建立半球胞体
 def distance_(data_order):
     distance_dict = {}
     for i in range(len(data_order)):
@@ -30,6 +32,7 @@ def distance_(data_order):
 
     return distance_dict
 
+#由三点坐标求经过三点的平面
 def three_point_flat(loc_1,loc_2,loc_3):
     x1 = loc_1[0]
     y1 = loc_1[1]
@@ -46,6 +49,7 @@ def three_point_flat(loc_1,loc_2,loc_3):
 
     return A,B,C
 
+#由当前运动方向和当前点、目标点坐标求两校正点之间的最短路径长度
 def route_distance(v,loc_1,loc_2):
     vx = v[0]
     vy = v[1]
@@ -86,7 +90,8 @@ def route_distance(v,loc_1,loc_2):
 
     return d,theta1
 
-def direction0(v,loc_1,loc_2):
+#由四元数法，已知当前运动方向和当前点、目标点坐标，求到达目标点时的运动方向
+def direction(v,loc_1,loc_2):
     vx = v[0]
     vy = v[1]
     vz = v[2]
@@ -124,7 +129,8 @@ def direction0(v,loc_1,loc_2):
 
     return v
 
-def direction(v,loc_1,loc_2):
+#另外一种求运动方向的方法，假设路径是以圆弧运动
+def direction0(v,loc_1,loc_2):
     vx = v[0]
     vy = v[1]
     vz = v[2]
@@ -155,7 +161,7 @@ def direction(v,loc_1,loc_2):
 
     return v
 
-
+#由当前运动方向和当前点、目标点坐标判断目标点是否在环形管道外，以判定目标点是否符合最小转弯约束要求
 def judge_feasibility(v,loc_1,loc_2):
     if loc_1[0]!=0:
         vx = v[0]
